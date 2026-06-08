@@ -4,13 +4,14 @@ from products import PRODUCTS, get_product_id
 
 app = Flask(__name__)
 
+
 def get_cart_data():
     cart_list = request.cookies.get('cart_list')
     try:
         cart_list = json.loads(cart_list) if cart_list else []
     except Exception:
         cart_list = []
-    
+
     cart_items = []
     cart_total = 0.0
     for item in cart_list:
@@ -28,8 +29,9 @@ def get_cart_data():
             'quantity': quantity
         })
         cart_total += product_data['price'] * quantity
-        
+
     return cart_items, cart_total
+
 
 @app.route('/')
 def index():
@@ -39,10 +41,12 @@ def index():
     cart_items, _ = get_cart_data()
     return render_template('index.html', products=PRODUCTS, cart_items=cart_items)
 
+
 @app.route('/products')
 def products():
     cart_items, _ = get_cart_data()
     return render_template('products.html', products=PRODUCTS, cart_items=cart_items)
+
 
 @app.route('/product/<product_name>')
 def product_detail(product_name):
@@ -54,7 +58,9 @@ def product_detail(product_name):
     # Exclude current product from related products
     related_products = [p for p in related_products if p['id'] != product['id']]
     cart_items, _ = get_cart_data()
-    return render_template('product_detail.html', product=product, related_products=related_products, cart_items=cart_items)
+    return render_template('product_detail.html', product=product, related_products=related_products,
+                           cart_items=cart_items)
+
 
 @app.route('/add_to_cart', methods=['POST', 'GET'])
 def add_to_cart():
@@ -62,20 +68,21 @@ def add_to_cart():
     qty = request.form.get("quantity", 1, type=int)
     if request.method == 'GET':
         qty = request.args.get("qty", 1, type=int)
-        
+
     return redirect(url_for('cart', product_id=product_id, qty=qty))
+
 
 @app.route('/cart')
 def cart():
     product_id = request.args.get("product_id")
     qty = request.args.get("qty", 1, type=int)
-    
+
     cart_list = request.cookies.get('cart_list')
     try:
         cart_list = json.loads(cart_list) if cart_list else []
     except Exception:
         cart_list = []
-    
+
     if product_id:
         product = get_product_id(product_id)
         if product:
@@ -85,19 +92,19 @@ def cart():
                     item['qty'] += qty
                     found = True
                     break
-            
+
             cart_list = [item for item in cart_list if item['qty'] > 0]
-            
+
             if not found and qty > 0:
                 cart_list.append(
                     {
-                        "id" : product['id'],
-                        "title" : product['title'],
-                        "qty" : qty,
-                        "price" : product['price'],
-                        "category" : product['category'],
-                        "image" : product['image'],
-                        "description" : product['description'],
+                        "id": product['id'],
+                        "title": product['title'],
+                        "qty": qty,
+                        "price": product['price'],
+                        "category": product['category'],
+                        "image": product['image'],
+                        "description": product['description'],
                     }
                 )
 
@@ -108,6 +115,7 @@ def cart():
     cart_items, cart_total = get_cart_data()
     return render_template("cart.html", cart_items=cart_items, cart_total=cart_total)
 
+
 @app.route('/cart/remove')
 def cart_remove():
     product_id = request.args.get("product_id")
@@ -116,14 +124,15 @@ def cart_remove():
         cart_list = json.loads(cart_list) if cart_list else []
     except Exception:
         cart_list = []
-    
+
     if product_id:
         cart_list = [item for item in cart_list if str(item['id']) != str(product_id)]
         resp = redirect(url_for('cart'))
         resp.set_cookie('cart_list', json.dumps(cart_list))
         return resp
-        
+
     return redirect(url_for('cart'))
+
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
@@ -151,10 +160,10 @@ def checkout():
             msg = f"🛒 *New Order Received!*\n\n"
             msg += f"👤 *Customer:* {first_name} {last_name}\n"
             msg += f"📍 *Address:* {address}, {city}, {zip_code}\n\n"
-            msg += f"🛍️ *Items:*\n"
+            msg += f"🛍 *Items:*\n"
             for item in cart_list:
                 msg += f"- {item['title']} (x{item['qty']}): ${item['price'] * item['qty']:.2f}\n"
-            
+
             msg += f"\n💰 *Subtotal:* ${subtotal:.2f}\n"
             msg += f"🚚 *Shipping:* ${shipping:.2f}\n"
             msg += f"🧾 *Tax:* ${tax:.2f}\n"
@@ -170,7 +179,8 @@ def checkout():
                     "parse_mode": "Markdown"
                 }
                 try:
-                    req = urllib.request.Request(url, data=json_lib.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'})
+                    req = urllib.request.Request(url, data=json_lib.dumps(payload).encode('utf-8'),
+                                                 headers={'Content-Type': 'application/json'})
                     urllib.request.urlopen(req)
                 except Exception as e:
                     print(f"Error sending Telegram message: {e}")
@@ -182,15 +192,18 @@ def checkout():
 
     return render_template('checkout.html', cart_list=cart_list)
 
+
 @app.route('/login')
 def login():
     cart_items, _ = get_cart_data()
     return render_template('login.html', cart_items=cart_items)
 
+
 @app.route('/register')
 def register():
     cart_items, _ = get_cart_data()
     return render_template('register.html', cart_items=cart_items)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
