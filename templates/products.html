@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | Vaii Store</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    {% include 'share/navbar.html' %}
+
+    <main>
+        <section class="container">
+            <div class="section-title">
+                <h1>All Products</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Explore our full range of premium tech</p>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--glass-border);">
+                <div style="color: var(--text-secondary);">Showing {{ products|length }} products</div>
+                <div>
+                    <select class="form-control" style="width: 200px;">
+                        <option>Sort by Featured</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="product-grid">
+                {% for product in products %}
+                <a href="{{ url_for('product_detail', product_name=product.title) }}" class="product-card glass">
+                    <img src="{{ product.image }}" alt="{{ product.title }}" class="product-image" style="object-fit: contain; background: white; padding: 1rem;">
+                    <h3 class="product-title">{{ product.title }}</h3>
+                    <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
+                    <button class="btn btn-primary btn-block">View Details</button>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    {% include 'share/footer.html' %}
+
+</body>
+</html>
