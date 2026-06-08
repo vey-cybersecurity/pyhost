@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Vaii Store</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    {% include 'share/navbar.html' %}
+
+    <main>
+        <section class="container" style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+            <div class="glass" style="width: 100%; max-width: 400px; padding: 2.5rem;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Welcome Back</h1>
+                    <p style="color: var(--text-secondary);">Sign in to your account</p>
+                </div>
+                
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between;">
+                            <label class="form-label">Password</label>
+                            <a href="#" style="font-size: 0.8rem; color: var(--accent-color);">Forgot Password?</a>
+                        </div>
+                        <input type="password" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">Sign In</button>
+                </form>
+                
+                <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    Don't have an account? <a href="{{ url_for('register') }}" style="color: var(--accent-color); font-weight: 500;">Create one</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    {% include 'share/footer.html' %}
+
+</body>
+</html>

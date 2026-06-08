@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.title }} | Vaii Store</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    {% include 'share/navbar.html' %}
+
+    <main>
+        <section class="container">
+            <div style="display: flex; gap: 4rem; flex-wrap: wrap;">
+                <!-- Product Image -->
+                <div style="flex: 1; min-width: 300px;">
+                    <div class="glass" style="padding: 1rem; border-radius: 20px;">
+                        <img src="{{ product.image }}" alt="{{ product.title }}" style="width: 100%; border-radius: 12px; object-fit: contain; aspect-ratio: 1; background-color: white; padding: 1rem;">
+                    </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">{{ product.title }}</h1>
+                    <p class="product-price" style="font-size: 2rem; margin-bottom: 1.5rem;">${{ "%.2f"|format(product.price) }}</p>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.8;">
+                        {{ product.description }}
+                    </p>
+                    
+                    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <input type="number" name="quantity" value="1" min="1" class="form-control" style="width: 80px; text-align: center;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1; font-size: 1.1rem;">
+                            <i class="fa-solid fa-cart-plus" style="margin-right: 0.5rem;"></i> Add to Cart
+                        </button>
+                    </form>
+                    
+                    <div style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        <p style="margin-bottom: 0.5rem;"><i class="fa-solid fa-truck" style="width: 20px;"></i> Free shipping on orders over $100</p>
+                        <p><i class="fa-solid fa-rotate-left" style="width: 20px;"></i> 30-day money-back guarantee</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Products Section -->
+        <section class="container" style="margin-top: 5rem; border-top: 1px solid var(--glass-border); padding-top: 3rem; padding-bottom: 2rem;">
+            <div class="section-title">
+                <h2>Related Products</h2>
+            </div>
+            {% if related_products %}
+            <div class="product-grid">
+                {% for p in related_products[:4] %}
+                <a href="{{ url_for('product_detail', product_name=p.title) }}" class="product-card glass">
+                    <img src="{{ p.image }}" alt="{{ p.title }}" class="product-image" style="object-fit: contain; background: white; padding: 1rem;">
+                    <h3 class="product-title" title="{{ p.title }}">{{ p.title }}</h3>
+                    <p class="product-price">${{ "%.2f"|format(p.price) }}</p>
+                    <button class="btn btn-primary btn-block">View Details</button>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="text-align: center; color: var(--text-secondary);">No related products found.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    {% include 'share/footer.html' %}
+
+</body>
+</html>

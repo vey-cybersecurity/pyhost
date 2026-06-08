@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Vaii Store</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    {% include 'share/navbar.html' %}
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Experience the Future of Technology</h1>
+                <p>Discover our curated collection of premium gadgets, designed to elevate your everyday life with cutting-edge innovation and stunning aesthetics.</p>
+                <a href="{{ url_for('products') }}" class="btn btn-primary" style="font-size: 1.125rem; padding: 1rem 2rem;">Shop the Collection</a>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="section-title">
+                <h2>Featured Products</h2>
+            </div>
+            
+            <div class="product-grid">
+                {% for product in products %}
+                <a href="{{ url_for('product_detail', product_name=product.title) }}" class="product-card glass">
+                    <img src="{{ product.image }}" alt="{{ product.title }}" class="product-image" style="object-fit: contain; background: white; padding: 1rem;">
+                    <h3 class="product-title" title="{{ product.title }}">{{ product.title }}</h3>
+                    <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
+                    <button class="btn btn-primary btn-block">View Detail</button>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    {% include 'share/footer.html' %}
+
+</body>
+</html>
